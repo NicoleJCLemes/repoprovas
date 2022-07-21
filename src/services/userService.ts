@@ -1,16 +1,17 @@
 import { findById, insert, User, UserSignUp, findByEmail } from "../repositories/userRepository.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function signUpService(body:UserSignUp) {
 
     if(body.password !== body.passwordConfirmed) {
         throw {
             type: "Unprocessable Entity",
-            message: "The passwords do not match"
+            message: "The passwords does not match"
         }
     }
 
-    const user = await findByEmail(body.email);
+    const user = await findByUserEmail(body.email);
     if(user) {
         throw {
             type: "Conflict",
@@ -22,6 +23,11 @@ export async function signUpService(body:UserSignUp) {
         email: body.email,
         password: bcrypt.hashSync(body.password, 10)
     });
+}
+
+async function findByUserEmail(email:string) {
+    const user = await findByEmail(email);
+    return user
 }
 
 export async function findByUserId(id:number) {
@@ -36,5 +42,23 @@ export async function findByUserId(id:number) {
 }
 
 export async function signInService(body:User) {
+
+    const user = await findByUserEmail(body.email);
+    if(!user) {
+        throw {
+            type: "Not Found",
+            message: "No user was found"
+        }
+    }
     
+    const passwordMatches = bcrypt.compareSync(body.password, user.password);
+    if(!passwordMatches) {
+        throw {
+            type: "Unauthorized",
+            message: "The password does not match"
+        }
+    }
+
+    const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY);
+    return token
 }
