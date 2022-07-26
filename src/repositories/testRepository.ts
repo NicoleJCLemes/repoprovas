@@ -37,22 +37,13 @@ export async function findByDisciplines() {
                     name: true,
                     teacherDiscipline: {
                         select: {
-                            teacher: true,
+                            teacher: {select: { name: true }},
                             tests: {
                                 select: {
                                     id: true,
                                     name: true,
                                     pdfUrl: true,
-                                    category: true,
-                                    teacherDiscipline: {
-                                        select: {
-                                            teacher: {
-                                                select: {
-                                                    name: true
-                                                }
-                                            }
-                                        }
-                                    }
+                                    category: {select: { name: true }}
                                 }
                             }
                         }
