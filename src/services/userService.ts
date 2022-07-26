@@ -4,13 +4,6 @@ import jwt from "jsonwebtoken";
 
 export async function signUpService(body:UserSignUp) {
 
-    if(body.password !== body.passwordConfirmed) {
-        throw {
-            type: "Unprocessable Entity",
-            message: "The passwords does not match"
-        }
-    }
-
     const user = await findByUserEmail(body.email);
     if(user) {
         throw {
