@@ -6,8 +6,7 @@ import { testSchema } from "../schemas/testSchema.js";
 
 const testRouter = Router();
 
-testRouter.use(authentication);
-testRouter.post("/tests", schemasValidation(testSchema), testController.postTest);
-testRouter.get("/tests", testController.getTests);
+testRouter.post("/tests", authentication, schemasValidation(testSchema), testController.postTest);
+testRouter.get("/tests", authentication, testController.getTests);
 
 export default testRouter;

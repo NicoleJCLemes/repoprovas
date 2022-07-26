@@ -4,7 +4,6 @@ import { authentication } from "../middlewares/authValidation.js";
 
 const categoryRouter = Router();
 
-categoryRouter.use(authentication);
-categoryRouter.get("/categories", getCategories);
+categoryRouter.get("/categories", authentication, getCategories);
 
 export default categoryRouter;

@@ -35,4 +35,6 @@ export async function authentication(req: Request, res: Response, next: NextFunc
             message: "Token invalid"
         }
     }
+
+    next();
 }
